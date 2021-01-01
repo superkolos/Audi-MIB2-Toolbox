@@ -1,5 +1,12 @@
-# Audi-MIB2-Tool
-# Evolution of MIB2 High toolbox
+# Audi-MIB2-Tool and what it can do for You
+- activate VIM (Video in Motion)
+- use custom AndroidAuto Apps (like Performancemonitor, etc.)
+- add Welcomesound (Audi Heartbeat)
+- customize Ringtones
+- change MMI Style by adding new graphics (only Submenus supported yet)
+- change Coding and Adaptions (not fully tested yet, use with high caution)
+
+# The Evolution of MIB2 toolbox by [jilleb](https://github.com/jilleb/mib2-toolbox)
 The ultimate MIB2-HIGH toolbox for all your MIB2 High customization needs.
 
 Note: this screen has to potential to ruin your MIB2 HIGH unit. The developers are not responsible for any troubles to anyone or anything caused by this toolbox.
