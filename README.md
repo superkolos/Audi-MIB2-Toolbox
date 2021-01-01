@@ -80,16 +80,18 @@ MLBCoding
 |
 +---Dump                                # dump various data to SD-card
 |   
-+---Customization                       # customisation features        
-|   +---Skin                            # Skin graphics import
++---Customization                       # customisation features   
 |   +---AndroidAuto                     # Android Auto custom apps patch
-|   +---Startup                         # Startup graphics import
+|   +---Graphics                        # Startup animation and graphics import
 |   +---Sounds                          # Sounds import (experimental)
-|   +---Various                         # Various tweaks
 |   +---GreenMenu                       # Import new green menu screens and scripts
 |   +---Navigation                      # Navigation tweaks
 |   +---Advanced                        # Import shadow file, FECs and such
 |   +---Updates                         # Custom SWDL modes and emergency
+|   +---Display                         # Splitscreen and Infos
+|   +---VIM                             # VideoInMotion settings
+|
+|   the following is not fully tested yet, use with caution
 |   +---Coding                          # Long coding editor
 |   \---Adaptations                     # Adaptation channels
 |       +---CarFunctionsList_BAP
