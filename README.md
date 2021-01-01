@@ -25,15 +25,19 @@ Note3: If you're a business who tries to make a profit off of this:  Don't be an
 
 # How to activate DeveloperMode on 5f controller with MIB-Tool
 Connect to MHI2 and start M.I.B.:
-  put the D-Link adapter into the USB-Port of the car and your Laptop
-  Use Putty/Kitty to connect via UART or Telnet (MIB IP:172.16.250.248) and login into RCC (recommended: port:123) or MMX (port:23).
-  Login and password for your units SW train has to be known: https://anonymousfiles.io/xzi8Nq2r/
-  Check your SW-train, a pre-patched ifs-root-stage2 has to be present within the folder /patches
-  Insert the SD card into slot SD1 of your MHI2 unit and login to the RCC shell:
+  - put the D-Link adapter into the USB-Port of the car and your Laptop
+  - Use Putty/Kitty to connect via UART or Telnet (MIB IP:172.16.250.248) and login into RCC (recommended: port:123) or MMX (port:23).
+  - Login and password for your units SW train has to be known: https://anonymousfiles.io/xzi8Nq2r/
+  - Check your SW-train, a pre-patched ifs-root-stage2 has to be present within the folder /patches
+  - Insert the SD card into slot SD1 of your MHI2 unit and login to the RCC shell:
    # Mount SD card in slot SD1
-     ```mount -uw /net/mmx/fs/sda0/```
+   
+```mount -uw /net/mmx/fs/sda0/```
+
    # start M.I.B by typing
-     ```/net/mmx/fs/sda0/start```
+   
+```/net/mmx/fs/sda0/start```
+   
    - choose 6 and wait until the script has finished and restarted your unit
    
 # How to install
