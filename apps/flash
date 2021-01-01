@@ -1,0 +1,165 @@
+#!/bin/sh
+
+revision="flash v0.1.0 (2020-11-16 by MIBonk)"
+# use --help for more info
+
+export PATH=:/proc/boot:/sbin:/bin:/usr/bin:/usr/sbin:/net/mmx/bin:/net/mmx/usr/bin:/net/mmx/usr/sbin:/net/mmx/sbin:/net/mmx/mnt/app/armle/bin:/net/mmx/mnt/app/armle/sbin:/net/mmx/mnt/app/armle/usr/bin:/net/mmx/mnt/app/armle/usr/sbin
+export LD_LIBRARY_PATH=/net/mmx/mnt/app/root/lib-target:/net/mmx/mnt/eso/lib:/net/mmx/eso/lib:/net/mmx/mnt/app/usr/lib:/net/mmx/mnt/app/armle/lib:/net/mmx/mnt/app/armle/lib/dll:/net/mmx/mnt/app/armle/usr/lib
+export IPL_CONFIG_DIR=/etc/eso/production
+
+thisname="$(basename $0)"
+thisdir="$(dirname $0)"
+
+function IFSstage2 {
+
+if [ -f "$IFS2" ]; then  
+	echo -ne "\033[33m"
+	echo -ne "\nDo NOT power down the unit while flashing!\n"
+	echo -ne "Do NOT remove the SD-card/USB stick!\n"
+	echo -ne "You have 10 seconds before flashing will start...\n"
+	echo -ne "\033[31m"
+	echo -ne "\nPress CTRL+C to abort!!!\n"
+	echo -ne "\033[00;00m"
+	echo -ne "\n10 seconds left..."
+	COUNTER=9
+	while [  $COUNTER -gt -1 ]; do
+		sleep 1
+		echo -ne "$COUNTER..."
+		let COUNTER=COUNTER-1
+	done
+	echo -ne "\033[31m\n"
+	echo -ne "\nFlashing will now start from $OFFSETPART2, do not interrupt!"
+	echo -ne "\033[00;00m"
+	echo -ne "\n" >> $LOG
+	/usr/bin/flashunlock >> $LOG
+	echo -ne "\n" | tee -i -a $LOG
+	trap '' 2
+	if [[ "$OFFSETPART2" = "ba0000" ]]; then 
+		echo -ne "\nFlashing on OFFSET 0x00"$OFFSETPART2"...\n\n" | tee -i -a $LOG
+		/usr/bin/flashit -v -d -a ba0000 -p /net/rcc/dev/fs0 -f $IFS2 >> $LOG
+	elif [[ "$OFFSETPART2" = "c20000" ]]; then
+		echo -ne "\nFlashing on OFFSET 0x00"$OFFSETPART2"...\n\n" | tee -a $LOG
+		/usr/bin/flashit -v -d -a c20000 -p /net/rcc/dev/fs0 -f $IFS2 >> $LOG
+	elif [[ "$OFFSETPART2" = "c00000" ]]; then
+		echo -ne "\nFlashing on OFFSET 0x00"$OFFSETPART2"...\n\n" | tee -a $LOG
+		/usr/bin/flashit -v -d -a c00000 -p /net/rcc/dev/fs0 -f $IFS2 >> $LOG
+	else
+		/usr/bin/flashlock | tee -i -a $LOG
+		echo -ne "\nFlash offset invalid, flashing aborted!\n\n" | tee -i -a $LOG
+		exit 0
+	fi
+	trap 2
+	echo -ne "\n" >> $LOG
+	/usr/bin/flashlock | tee -i -a $LOG
+	echo -ne "\n" | tee -i -a $LOG
+else
+	echo -ne "\nNo Flashfiles there!\n\n" | tee -i -a $LOG
+	exit 0
+fi
+
+}
+
+
+	case $1 in
+
+	-p|-patch) {
+
+if [ -z $LOG ]; then
+	. $thisdir/../config/GLOBALS
+	echo -ne "\n$ME-$thisname---->\n" >> $LOG
+fi
+
+if [ $ME != "RCC" ]; then
+	echo -ne "\nBackup will only work in RCC bash!\n\n"
+exit 0
+fi
+
+. $thisdir/backup -b
+
+if [ ! -f $BACKUPFOLDER/$MUVERSION-EEProm.txt ] || [ ! -f $BACKUPFOLDER/$MUVERSION-RCC_fs0.bin ] || [ ! -f $BACKUPFOLDER/FecContainer.fec ]; then
+echo -ne "Backup is not complete, do flash update is not save!!!\n\n" | tee -i -a $LOG
+exit 0
+fi
+
+# flash Patch...
+IFS2=$VOLUME"/patches/"$TRAINVERSION"_"$MUVERSION"_PATCH/"$MUVERSION"-ifs-root-part2-0x00"$OFFSETPART2"-"$STAGE2SIZE".ifs"
+echo -ne "search File "$MUVERSION-ifs-root-part2-0x00$OFFSETPART2-$STAGE2SIZE.ifs"\n" | tee -i -a $LOG
+
+IFSstage2
+
+trap '' 2
+. $thisdir/rccd -d
+. $thisdir/fecel -fec
+. $thisdir/fecel -el
+. $thisdir/reboot -t 10
+
+
+return 2> /dev/null
+
+	};;
+
+
+	-r|-restore) {
+
+if [ -z $LOG ]; then
+	. $thisdir/../config/GLOBALS
+	echo -ne "\n$ME-$thisname---->\n" >> $LOG
+fi
+
+if [ $ME != "RCC" ]; then
+	echo -ne "\nBackup will only work in RCC bash!\n\n"
+exit 0
+fi
+
+. $thisdir/offset -log
+
+# flash back to Original...
+IFS2=$VOLUME"/backup/"$MUVERSION"-"$FAZIT"/"$MUVERSION"-ifs-root-part2-0x00"$OFFSETPART2".ifs"
+echo -ne "search "$FAZIT" Backup File "$MUVERSION"-ifs-root-part2-0x00"$OFFSETPART2".ifs\n" | tee -i -a $LOG
+
+IFSstage2
+
+trap '' 2
+. $thisdir/fecel -b
+. $thisdir/reboot -t 10
+
+
+return 2> /dev/null
+
+	};;
+
+	# help or unknown parameter ------------------------------
+	*) {
+		echo ""
+		echo $revision
+		echo ""
+		echo "Usage: "$thisname" [OPTION]"
+		echo ""
+		echo "Options:"
+		echo "        -p, -patch 		flash patch"
+		echo "        -r, -restore 		flash original"
+		echo "        --help			show this help"
+		echo ""
+		echo "Note: Flash will only work in RCC bash!"
+		echo ""
+		echo "This program is free software; you can redistribute it and/or"
+		echo "modify it under the terms of the GNU General Public License"
+		echo "as published by the Free Software Foundation; either version 2"
+		echo "of the License, or (at your option) any later version."
+		echo ""
+		echo "This program is distributed in the hope that it will be useful,"
+		echo "but WITHOUT ANY WARRANTY; without even the implied warranty of"
+		echo "MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE."
+		echo "See the GNU General Public License for more details."
+		echo ""
+		echo "You should have received a copy of the GNU General Public License"
+		echo "along with this program; if not, write to the Free Software Foundation,"
+		echo "Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA."
+		echo ""
+		
+	};;
+
+	esac
+
+exit 0
+

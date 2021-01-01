@@ -1,0 +1,212 @@
+#!/bin/sh
+
+revision="backup v0.1.0 (2020-11-16 by MIBonk)"
+# use --help for more info
+
+export PATH=:/proc/boot:/sbin:/bin:/usr/bin:/usr/sbin:/net/mmx/bin:/net/mmx/usr/bin:/net/mmx/usr/sbin:/net/mmx/sbin:/net/mmx/mnt/app/armle/bin:/net/mmx/mnt/app/armle/sbin:/net/mmx/mnt/app/armle/usr/bin:/net/mmx/mnt/app/armle/usr/sbin
+export LD_LIBRARY_PATH=/net/mmx/mnt/app/root/lib-target:/net/mmx/mnt/eso/lib:/net/mmx/eso/lib:/net/mmx/mnt/app/usr/lib:/net/mmx/mnt/app/armle/lib:/net/mmx/mnt/app/armle/lib/dll:/net/mmx/mnt/app/armle/usr/lib
+export IPL_CONFIG_DIR=/etc/eso/production
+
+thisname="$(basename $0)"
+thisdir="$(dirname $0)"
+
+	case $1 in
+
+	-b) {
+
+if [ -z $LOG ]; then
+	. $thisdir/../config/GLOBALS
+	echo -ne "\n$ME-$thisname---->\n" >> $LOG
+fi
+
+if [ $ME != "RCC" ]; then
+	echo -ne "\nBackup will only work in RCC bash!\n\n"
+exit 0
+fi
+
+. $thisdir/offset -log
+
+if [ -d $BACKUPFOLDER ]; then
+	echo -ne "Found $FAZIT Backup, will check if all complete...\n\n" | tee -i -a $LOG
+else
+	mkdir -p $BACKUPFOLDER
+	sleep 1
+fi
+
+echo -ne "\033[31m"
+echo -ne "Note: Backup steps need some seconds for success!\n\n"
+echo -ne "\033[36m"
+trap '' 2
+
+echo -ne "EEPROM..........." | tee -i -a $LOG
+if [ ! -f $BACKUPFOLDER/$MUVERSION-EEProm.txt ]; then
+	/usr/apps/modifyE2P r 0 8000 > $BACKUPFOLDER/$MUVERSION-EEProm.txt 2>> $LOG
+	ERROR
+	sleep 1
+else 
+	echo -ne " -> Backup is already there!\n" | tee -i -a $LOG
+fi
+
+echo -ne "Partition info..." | tee -i -a $LOG
+if [ ! -f $BACKUPFOLDER/$MUVERSION-Partition.txt ]; then
+	echo -ne "\nfdisk mnand0 show ->\n\n" > $BACKUPFOLDER/$MUVERSION-Partition.txt 2>> $LOG
+	/net/mmx/bin/fdisk /net/mmx/dev/mnand0 show >> $BACKUPFOLDER/$MUVERSION-Partition.txt 2>> $LOG
+	echo -ne "fdisk mnand0 info ->\n\n" >> $BACKUPFOLDER/$MUVERSION-Partition.txt 2>> $LOG
+	/net/mmx/bin/fdisk /net/mmx/dev/mnand0 info >> $BACKUPFOLDER/$MUVERSION-Partition.txt 2>> $LOG
+	echo -ne "fstab MMX mount ->\n\n" >> $BACKUPFOLDER/$MUVERSION-Partition.txt 2>> $LOG
+	cat /net/mmx/etc/fstab >> $BACKUPFOLDER/$MUVERSION-Partition.txt 2>> $LOG
+	ERROR
+	sleep 1
+else 
+	echo -ne " -> Backup is already there!\n" | tee -i -a $LOG
+fi
+
+echo -ne "Variant info....." | tee -i -a $LOG
+if [ ! -f $BACKUPFOLDER/$MUVERSION-Variant.txt ]; then
+	cp -r /mnt/efs-persist/SWDL/Variant.txt $BACKUPFOLDER/$MUVERSION-Variant.txt 2>> $LOG
+	ERROR
+	sleep 1
+else 
+	echo -ne " -> Backup is already there!\n" | tee -i -a $LOG
+fi
+
+echo -ne "Exception List..." | tee -i -a $LOG
+if [ ! -f $BACKUPFOLDER/ExceptionList.txt ]; then
+	cp -r /mnt/efs-persist/FEC/ExceptionList.txt $BACKUPFOLDER/ExceptionList.txt 2>> $LOG
+	ERROR
+	sleep 1
+else 
+	echo -ne " -> Backup is already there!\n" | tee -i -a $LOG
+fi
+
+echo -ne "FEC container...." | tee -i -a $LOG
+if [ ! -f $BACKUPFOLDER/FecContainer.fec ]; then
+	cp -r /mnt/efs-persist/FEC/FecContainer.fec $BACKUPFOLDER/FecContainer.fec 2>> $LOG
+	ERROR
+	sleep 1
+else 
+	echo -ne " -> Backup is already there!\n" | tee -i -a $LOG
+fi
+
+echo -ne "storage1........." | tee -i -a $LOG
+if [ ! -f $BACKUPFOLDER/$MUVERSION-storage1.raw ]; then
+	cp -r /mnt/efs-persist/storage1.raw $BACKUPFOLDER/$MUVERSION-storage1.raw 2>> $LOG
+	ERROR
+	sleep 1
+else 
+	echo -ne " -> Backup is already there!\n" | tee -i -a $LOG
+fi
+
+echo -ne "storage2........." | tee -i -a $LOG
+if [ ! -f $BACKUPFOLDER/$MUVERSION-storage2.raw ]; then
+	cp -r /mnt/efs-persist/storage2.raw $BACKUPFOLDER/$MUVERSION-storage2.raw 2>> $LOG
+	ERROR
+	sleep 1
+else 
+	echo -ne " -> Backup is already there!\n" | tee -i -a $LOG
+fi
+
+echo -ne "MIBRoot.........." | tee -i -a $LOG
+if [ ! -f $BACKUPFOLDER/$MUVERSION-MIBRoot ]; then
+	cp -r /usr/apps/MIBRoot $BACKUPFOLDER/$MUVERSION-MIBRoot 2>> $LOG
+	ERROR
+	sleep 1
+else 
+	echo -ne " -> Backup is already there!\n" | tee -i -a $LOG
+fi
+
+echo -ne "RCC Flashlock...." | tee -i -a $LOG
+if [ ! -f $BACKUPFOLDER/$MUVERSION-RCC-Flashlock.log ]; then
+	/usr/bin/flashlock > $BACKUPFOLDER/$MUVERSION-RCC-Flashlock.log 2>> $LOG
+	ERROR
+	sleep 1
+else 
+	echo -ne " -> Backup is already there!\n" | tee -i -a $LOG
+fi
+
+echo -ne "RCC.............." | tee -i -a $LOG
+if [ ! -f $BACKUPFOLDER/$MUVERSION-RCC_fs0.bin ]; then
+	cat /dev/fs0 > $BACKUPFOLDER/$MUVERSION-RCC_fs0.bin 2>> $LOG
+	ERROR
+	sleep 1
+else 
+	echo -ne " -> Backup is already there!\n" | tee -i -a $LOG
+fi
+
+echo -ne "MMX.............." | tee -i -a $LOG
+if [ ! -f $BACKUPFOLDER/$MUVERSION-MMX_fs0.bin ]; then
+	cat /net/mmx/dev/fs0 > $BACKUPFOLDER/$MUVERSION-MMX_fs0.bin 2>> $LOG
+	ERROR
+	sleep 1
+else 
+	echo -ne " -> Backup is already there!\n" | tee -i -a $LOG
+fi
+
+echo -ne "IFS-stage2......." | tee -i -a $LOG
+if [ ! -f $BACKUPFOLDER/$MUVERSION-ifs-root-part2-0x00$OFFSETPART2.ifs ]; then
+	if [ ! -z $SKIPBLOCKS ];then
+		dd bs=4096 skip=$SKIPBLOCKS if=$fs0p0 of=$BACKUPFOLDER/$MUVERSION-ifs-root-part2-0x00$OFFSETPART2.ifs 2>> $LOG
+		ERROR
+	else
+		echo -ne "OFFSET unkown, aborted!\n" | tee -i -a $LOG
+	fi
+	sleep 1
+else 
+	echo -ne " -> Backup is already there!\n" | tee -i -a $LOG
+fi
+
+echo -ne "OFFSET's........." | tee -i -a $LOG
+if [ ! -f $BACKUPFOLDER/$MUVERSION-ifs-root-part2-0x00$OFFSETPART2-OFFSET.txt ]; then
+	echo -ne "OFFSET: 0x00"$OFFSETPART2"-"$STAGE2SIZE"\n" > $BACKUPFOLDER/$MUVERSION-ifs-root-part2-0x00$OFFSETPART2-OFFSET.txt
+	ERROR
+	sleep 1
+else 
+	echo -ne " -> Backup is already there!\n" | tee -i -a $LOG
+fi
+
+echo -ne "\033[00;00m"
+# cleanup 0 Bytes Error Files...
+echo $(find $BACKUPFOLDER -type f -size 0 -exec rm -rf {} \;) 2>&1 | tee -i -a $LOG
+echo -ne $TRAINVERSION" "$MUVERSION" - "
+echo -ne "Please check Log for Errors...\n\n"
+trap 2
+
+
+return 2> /dev/null
+
+	};;
+
+	# help or unknown parameter ------------------------------
+	*) {
+		echo ""
+		echo $revision
+		echo ""
+		echo "Usage: "$thisname" [OPTION]"
+		echo ""
+		echo "Options:"
+		echo "        -b 			Backup"
+		echo "        --help			show this help"
+		echo ""
+		echo "Note: Backup will only work in RCC bash!"
+		echo ""
+		echo "This program is free software; you can redistribute it and/or"
+		echo "modify it under the terms of the GNU General Public License"
+		echo "as published by the Free Software Foundation; either version 2"
+		echo "of the License, or (at your option) any later version."
+		echo ""
+		echo "This program is distributed in the hope that it will be useful,"
+		echo "but WITHOUT ANY WARRANTY; without even the implied warranty of"
+		echo "MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE."
+		echo "See the GNU General Public License for more details."
+		echo ""
+		echo "You should have received a copy of the GNU General Public License"
+		echo "along with this program; if not, write to the Free Software Foundation,"
+		echo "Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA."
+		echo ""
+		
+	};;
+
+	esac
+
+exit 0
+
