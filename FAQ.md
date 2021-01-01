@@ -6,7 +6,6 @@
 - [Can this enable Android Auto / CarPlay?](#can-this-enable-android-auto--carplay)
 - [Why do I get a variant-conflict error?](#why-do-i-get-a-variant-conflict-error)
 - [Why do I get a "script not foud" error?](#why-do-i-get-a-script-not-found-error)
-- [When will you make a toolbox for MIB2 Standard?](#when-will-you-make-a-toolbox-for-mib2-standard)
 
 ## What can I do with this?
 Customize your MIB2HIGH unit graphics, patch Android Auto so it can run custom apps.
@@ -31,6 +30,4 @@ This can happen because of 2 reasons:
 - The most common mistake: You didn't press the "Get new scripts and files from SD-card (slot1)" button in the green menu. There's a reason why I included descriptive text on most of the screens.  There's a reason for reading the readme. Please read them, because it's very risky to do stuff just blindly. When something goes wrong, you only got yourself to blame.
 - Your firmware is different from what was expected.. This can because of modifications by parties like APG or because VAG made changes in some way. But.. to be sure this is all not the case, press the "Get new scripts and files from SD-card (slot1)" button.
 
-## When will you make a toolbox for MIB2 Standard?
-- I don't have any access to a Discover Media or Composition Media to try and develop/test a solution. The MIB2High toolbox is the result of a lot of research about MIB2H vulnerabilities and possibilities, I am completely in the dark when it comes to Discover/Composition Media units.
 
