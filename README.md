@@ -23,18 +23,7 @@ Note3: If you're a business who tries to make a profit off of this:  Don't be an
 - Notepad++, if you want to make your own green menu files or scripts
 - Picture editing software, if you want to customize graphics files
 
-# How to install
-- Put the mib2-tool on an SD-card and insert it into the MIB-unit
-- Make a connection to the debug console of the unit (either via D-Link Dub-E100 on the USB port, or serial interface on the back of the unit)
-- Log in
-- make the mmx app volume writable:
-```mount -uw /net/mmx/mnt/app/```
-
-- copy mlbcoding.esd to /net/mmx/mnt/app/eso/hmi/engdefs/mlbcoding.esd:
-
-```cp /net/mmx/fs/sda0/payload_mlb.sh /net/mmx/mnt/app/eso/hmi/engdefs/mlbcoding.esd```
-
-# How to activate DeveloperMode on 5f controller
+# How to activate DeveloperMode on 5f controller with MIB-Tool
 Connect to MHI2 and start M.I.B.:
   put the D-Link adapter into the USB-Port of the car and your Laptop
   Use Putty/Kitty to connect via UART or Telnet (MIB IP:172.16.250.248) and login into RCC (recommended: port:123) or MMX (port:23).
@@ -46,6 +35,19 @@ Connect to MHI2 and start M.I.B.:
    # start M.I.B by typing
      ```/net/mmx/fs/sda0/start```
    - choose 6 and wait until the script has finished and restarted your unit
+   
+# How to install
+- Put the mib2-tool on an SD-card and insert it into the MIB-unit
+- Make a connection to the debug console of the unit (either via D-Link Dub-E100 on the USB port, or serial interface on the back of the unit)
+- Log in
+- make the mmx app volume writable:
+
+```mount -uw /net/mmx/mnt/app/```
+
+- copy mlbcoding.esd to /net/mmx/mnt/app/eso/hmi/engdefs/mlbcoding.esd:
+
+```cp /net/mmx/fs/sda0/payload_mlb.sh /net/mmx/mnt/app/eso/hmi/engdefs/mlbcoding.esd```
+
 
 # How to use
 - Hold the BACK+LOWERLEFT buttons together for at least 6sec, the GEM will prompt. On older versions you can go to the developer menu by holding the MENU button for about 10 seconds.
