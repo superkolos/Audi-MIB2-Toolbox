@@ -1,5 +1,5 @@
-# Audi-MIB2
-# MIB2 High toolbox
+# Audi-MIB2-Tool
+# Evolution of MIB2 High toolbox
 The ultimate MIB2-HIGH toolbox for all your MIB2 High customization needs.
 
 Note: this screen has to potential to ruin your MIB2 HIGH unit. The developers are not responsible for any troubles to anyone or anything caused by this toolbox.
@@ -7,10 +7,11 @@ It's never our intention to harm any person, car or brand. Use the tools wisely,
 
 Note2: This is **not** a universal Jailbreak-like solution for all your needs and firmware versions.
 
-Note3: If you're a business who tries to make a profit off of this:  Don't be an asshole: Don't charge money for this. This project is done in my own time, out of love for the community. I've risked bricking my own hardware while testing, and invested a lot of time in the research. Instead of making money, why not support this project with your knowledge or a [small donation](https://paypal.me/chillout1). 
+Note3: If you're a business who tries to make a profit off of this:  Don't be an asshole: Don't charge money for this. This project is done in my own time, out of love for the community. I've risked bricking my own hardware while testing, and invested a lot of time in the research. Instead of making money, why not support this project with your knowledge or a [small donation](https://paypal.me/superkolos). 
 
 # Requirements
 - Read the entire readme
+- D-Link DUB E100 USB2 adapter (D-Link - e.g. DUB-E100 HW rev. D1 - USB-Ethernet adapter)
 - At least 1 healthy set of brains
 - An MIB2 HIGH or MIB2.5 HIGH infotainment unit. It will **not** work on MIB1 or MIB2 Standard units. Discover Media / Compostion Media is not MIB2 HIGH!
 - 1 empty, **FAT32 formatted** SD-card, with enough space. Everything bigger than 1GB is fine
@@ -23,41 +24,48 @@ Note3: If you're a business who tries to make a profit off of this:  Don't be an
 - Picture editing software, if you want to customize graphics files
 
 # How to install
-- Put all files and folders on an empty SD-card, preferable >1GB.
-- Put the SD-card in one of the slots of your MIB2-unit. 
-- Make sure there's only 1 SD-card in your unit, otherwise the scripts don't know where to look.
-- Hold the MENU button on your MIB2 and start the software update menu.
-- Select the SD-card and select MQB Coding MIB2 Toolbox.
-- Let the unit run the entire software update. It will reboot several times
-- When it's done, it will ask you to connect a computer and clear the error codes. This is not needed.
-- The unit will restart one final time and you're back at the main car menu. Installation is now done.
-- Hold the MENU button, and go to TESTMODE. On older versions you can go to the developer menu by holding the MENU button for about 10 seconds.
-- Go to the Green Developer Menu
-- There will be an additional menu called "mqbcoding". When you see this, the installation was succesful.
-- Go to mqbcoding, and you will see the following:
-
-![The MLB Coding toolbox menu](https://i.imgur.com/mLHXCmT.png)
-
-- Run the "Get new scripts and files from SD-card (slot1)" script, and additional files will be installed.
-- You're now done.
-- Enjoy!
-
-# How to do a manual installation
-- Put the mib2-toolbox on an SD-card and insert it into the MIB-unit
+- Put the mib2-tool on an SD-card and insert it into the MIB-unit
 - Make a connection to the debug console of the unit (either via D-Link Dub-E100 on the USB port, or serial interface on the back of the unit)
 - Log in
-- make the mmx app volume writable: mount -uw /net/mmx/mnt/app/
-- copy mlbcoding.esd to /net/mmx/mnt/app/eso/hmi/engdefs/mlbcoding.esd:
+- make the mmx app volume writable:
+```mount -uw /net/mmx/mnt/app/```
 
+- copy mlbcoding.esd to /net/mmx/mnt/app/eso/hmi/engdefs/mlbcoding.esd:
 
 ```cp /net/mmx/fs/sda0/payload_mlb.sh /net/mmx/mnt/app/eso/hmi/engdefs/mlbcoding.esd```
 
-- Hold the MENU button, and go to TESTMODE. On older versions you can go to the developer menu by holding the MENU button for about 10 seconds.
+# How to activate DeveloperMode on 5f controller
+Connect to MHI2 and start M.I.B.:
+  put the D-Link adapter into the USB-Port of the car and your Laptop
+  Use Putty/Kitty to connect via UART or Telnet (MIB IP:172.16.250.248) and login into RCC (recommended: port:123) or MMX (port:23).
+  Login and password for your units SW train has to be known: https://anonymousfiles.io/xzi8Nq2r/
+  Check your SW-train, a pre-patched ifs-root-stage2 has to be present within the folder /patches
+  Insert the SD card into slot SD1 of your MHI2 unit and login to the RCC shell:
+   # Mount SD card in slot SD1
+     ```mount -uw /net/mmx/fs/sda0/```
+   # start M.I.B by typing
+     ```/net/mmx/fs/sda0/start```
+   - choose 6 and wait until the script has finished and restarted your unit
+
+# How to use
+- Hold the BACK+LOWERLEFT buttons together for at least 6sec, the GEM will prompt. On older versions you can go to the developer menu by holding the MENU button for about 10 seconds.
+[Developer Menu Access](https://i.imgur.com/s04xT0M.png)
+
 - Go to the Green Developer Menu
 - There will be an additional menu called "mlbcoding". When you see this, the installation was succesful.
 - Run the "Get new scripts and files from SD-card (slot1)" script, and additional files will be installed.
 - You're now done.
 - Enjoy!
+
+- Put all files and folders on an empty SD-card, preferable >1GB.
+- Put the SD-card in the left slot of your MIB2-unit. 
+- Make sure there's only 1 SD-card in your unit, otherwise the scripts don't know where to look.
+- Hold the BACK+UPPPERLEFT buttons on your MIB2 and start the software update menu.
+- Select the SD-card and select MQB Coding MIB2 Toolbox.
+- Let the unit run the entire software update. It will reboot several times
+- When it's done, it will ask you to connect a computer and clear the error codes. This is not needed.
+- The unit will restart one final time and you're back at the main car menu. Installation is now done.
+
 
 # Green menu screen overview:
 
