@@ -25,6 +25,9 @@ Note3: If you're a business who tries to make a profit off of this:  Don't be an
 - Some place to save your backups
 - Developer mode enabled on module 5F (you need M.I.B.-Tool/VCDS/OBD11/VCP for this!)
 
+# Put all contents of the rar-Archive on an empty SD-Card
+[should be looking like this](https://i.imgur.com/ZWkO80r.png)
+
 ## Optional requirements ##
 - Python 2.7, if you want to extract/compress graphics containers (canim/mcf)
 - Notepad++, if you want to make your own green menu files or scripts
