@@ -38,7 +38,7 @@ Connect to MHI2 and start M.I.B.:
    
 ```/net/mmx/fs/sda0/start```
    
-   - choose 6 and wait until the script has finished and restarted your unit
+   - choose Option 6 and wait until the script has finished and restarted your unit
    
 # How to install
 - Put the mib2-tool on an SD-card and insert it into the MIB-unit
